@@ -61,7 +61,7 @@ class Konferentsiya<T extends Zasidannya> {
   Future<double> obchyslytySerednyeAsync() {
     return Future(() {
       if (_zasidannyaMap.isEmpty) {
-        throw Exception("❌ Немає засідань для обчислення середнього!");
+        throw Exception("Немає засідань для обчислення середнього!");
       }
       return serednyaKilkistUchasnykiv();
     });
@@ -105,3 +105,4 @@ Future<void> runAsyncDemo() async {
 void main() async {
   await runAsyncDemo();
 }
+
