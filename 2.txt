@@ -1,0 +1,69 @@
+
+abstract class DomashnyaTvaryna {
+  String imya;
+  String harakter;
+  int vik;
+
+  DomashnyaTvaryna(this.imya, this.harakter, this.vik);
+
+
+  void showInfo();
+}
+
+
+class Sobaka extends DomashnyaTvaryna {
+  String poroda;
+
+  Sobaka(String imya, String harakter, int vik, this.poroda)
+      : super(imya, harakter, vik);
+
+  @override
+  void showInfo() {
+    print("Собака: $imya");
+    print("Порода: $poroda");
+    print("Вік: $vik років");
+    print("Характер: $harakter\n");
+  }
+}
+
+
+class Kishka extends DomashnyaTvaryna {
+  String kolir;
+
+  Kishka(String imya, String harakter, int vik, this.kolir)
+      : super(imya, harakter, vik);
+
+  @override
+  void showInfo() {
+    print("Кішка: $imya");
+    print("Колір: $kolir");
+    print("Вік: $vik років");
+    print("Характер: $harakter\n");
+  }
+}
+
+
+class Papuga extends DomashnyaTvaryna {
+  bool movnyy;
+
+  Papuga(String imya, String harakter, int vik, this.movnyy)
+      : super(imya, harakter, vik);
+
+  @override
+  void showInfo() {
+    print("Папуга: $imya");
+    print("Розмовляє: ${movnyy ? 'так' : 'ні'}");
+    print("Вік: $vik років");
+    print("Характер: $harakter\n");
+  }
+}
+
+void main() {
+  var sobaka = Sobaka("Барс", "вірний і активний", 4, "Лабрадор");
+  var kishka = Kishka("Мурка", "лагідна і спокійна", 2, "Сіра");
+  var papuga = Papuga("Кеша", "гучний і веселий", 3, true);
+
+  sobaka.showInfo();
+  kishka.showInfo();
+  papuga.showInfo();
+}

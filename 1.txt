@@ -1,0 +1,40 @@
+import 'dart:math';
+
+void main() {
+  const int variant = 6;
+  final double X1 = 1.23 * variant; 
+  final double X2 = X1 + 10;        
+  const double dX = 1;             
+  final double Y = 4.6 * variant;  
+  final double Z = 3.6 * variant;   
+  const double bVal = 2.5;       
+
+  print("Табулювання функції a(x, y, z, b) для варіанта №$variant");
+  print("Y = $Y, Z = $Z, b = $bVal\n");
+  print("-------------------------------------------------------------");
+  print("|    x    |          a(x,y,z,b)          |");
+  print("-------------------------------------------------------------");
+
+  for (double x = X1; x <= X2; x += dX) {
+    double aVal = a(x, Y, Z, bVal);
+    print("| ${x.toStringAsFixed(2).padLeft(6)} | ${aVal.toStringAsExponential(10).padLeft(30)} |");
+  }
+
+  print("-------------------------------------------------------------");
+}
+
+
+double a(double x, double y, double z, double b) {
+  return (2 + pow(b, 2) * pow(sin(x), 2) * pow(y, 3)) / 
+         (pow(b, 2) + pow(sin(y), 2)) + 
+         tan(3 * x / pow(y, 2));
+}
+
+
+double bFunc(double x, double y, double z) {
+  double inner = (x + y) / (z - 1);
+
+  if (inner < -1) inner = -1;
+  if (inner > 1) inner = 1;
+  return pow(cos(acos(inner)), 2) + exp(pow(y, 3.3) + y / x);
+}

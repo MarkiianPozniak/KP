@@ -1,0 +1,103 @@
+import 'dart:math';
+
+class Zasidannya {
+  DateTime _data;
+  String _tema;
+  int _kilkistUchasnykiv;
+
+  Zasidannya(this._data, this._tema, this._kilkistUchasnykiv);
+
+
+  DateTime get data => _data;
+  String get tema => _tema;
+  int get kilkistUchasnykiv => _kilkistUchasnykiv;
+
+  set data(DateTime value) => _data = value;
+  set tema(String value) => _tema = value;
+  set kilkistUchasnykiv(int value) {
+    if (value >= 0) {
+      _kilkistUchasnykiv = value;
+    } else {
+      throw ArgumentError("Кількість учасників не може бути від’ємною");
+    }
+  }
+
+  // Метод виводу інформації
+  void showInfo() {
+    print("Дата: ${_data.toLocal()}");
+    print("Тема: $_tema");
+    print("Кількість учасників: $_kilkistUchasnykiv\n");
+  }
+}
+
+class Konferentsiya {
+  String _nazva;
+  String _misto;
+  Map<int, Zasidannya> _zasidannyaMap = {};
+
+
+  Konferentsiya(this._nazva, this._misto);
+
+
+  String get nazva => _nazva;
+  String get misto => _misto;
+
+
+  set nazva(String value) => _nazva = value;
+  set misto(String value) => _misto = value;
+
+
+  void dodatyZasidannya(int id, Zasidannya z) {
+    _zasidannyaMap[id] = z;
+  }
+
+
+  void pokazatyZasidannya() {
+    print("=== Засідання конференції '$_nazva' ===\n");
+    _zasidannyaMap.forEach((id, z) {
+      print("№$id:");
+      z.showInfo();
+    });
+  }
+
+
+  double serednyaKilkistUchasnykiv() {
+    if (_zasidannyaMap.isEmpty) return 0;
+    var sum = _zasidannyaMap.values
+        .map((z) => z.kilkistUchasnykiv)
+        .reduce((a, b) => a + b);
+    return sum / _zasidannyaMap.length;
+  }
+
+
+  Zasidannya? naybilshaKilkistUchasnykiv() {
+    if (_zasidannyaMap.isEmpty) return null;
+    return _zasidannyaMap.values.reduce(
+      (a, b) => a.kilkistUchasnykiv > b.kilkistUchasnykiv ? a : b,
+    );
+  }
+
+
+  int dovzhynaNazvy() => _nazva.length;
+}
+
+
+void main() {
+
+  var konf = Konferentsiya("Інновації в ІТ 2025", "Київ");
+
+
+  konf.dodatyZasidannya(
+      1, Zasidannya(DateTime(2025, 10, 10), "Штучний інтелект", 120));
+  konf.dodatyZasidannya(
+      2, Zasidannya(DateTime(2025, 10, 11), "Кібербезпека", 95));
+  konf.dodatyZasidannya(
+      3, Zasidannya(DateTime(2025, 10, 12), "Хмарні технології", 130));
+
+  konf.pokazatyZasidannya();
+
+  print("Середня кількість учасників: ${konf.serednyaKilkistUchasnykiv().toStringAsFixed(2)}");
+  print("Засідання з найбільшою кількістю учасників:");
+  konf.naybilshaKilkistUchasnykiv()?.showInfo();
+  print("Довжина назви конференції: ${konf.dovzhynaNazvy()} символів");
+}

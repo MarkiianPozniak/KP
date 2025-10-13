@@ -1,0 +1,107 @@
+import 'dart:async';
+
+class Zasidannya {
+  DateTime data;
+  String tema;
+  int kilkistUchasnykiv;
+
+  Zasidannya(this.data, this.tema, this.kilkistUchasnykiv);
+
+  void showInfo() {
+    print(" ${data.toLocal()} |  $tema |  $kilkistUchasnykiv учасників");
+  }
+}
+
+
+class Konferentsiya<T extends Zasidannya> {
+  String nazva;
+  String mistse;
+  Map<int, T> _zasidannyaMap = {};
+
+  Konferentsiya(this.nazva, this.mistse);
+
+  void dodatyZasidannya(int id, T zasidannya) {
+    _zasidannyaMap[id] = zasidannya;
+  }
+
+
+  void vyvestySpysok<K>(Map<K, T> mapa) {
+    mapa.forEach((k, v) {
+      print("ID: $k →");
+      v.showInfo();
+    });
+  }
+
+
+  double serednye<N extends num>(List<N> spysok) {
+    if (spysok.isEmpty) return 0;
+    double sum = spysok.fold(0, (prev, element) => prev + element.toDouble());
+    return sum / spysok.length;
+  }
+
+
+  T? znajtyMaxZaKilkistyu() {
+    if (_zasidannyaMap.isEmpty) return null;
+    return _zasidannyaMap.values.reduce(
+        (a, b) => a.kilkistUchasnykiv > b.kilkistUchasnykiv ? a : b);
+  }
+
+  double serednyaKilkistUchasnykiv() {
+    var kilkosti = _zasidannyaMap.values.map((z) => z.kilkistUchasnykiv).toList();
+    return serednye(kilkosti);
+  }
+
+  int dovzhynaNazvy() => nazva.length;
+
+  void pokazatyZasidannya() {
+    print("=== Засідання конференції '$nazva' ($mistse) ===");
+    vyvestySpysok(_zasidannyaMap);
+  }
+
+  Future<double> obchyslytySerednyeAsync() {
+    return Future(() {
+      if (_zasidannyaMap.isEmpty) {
+        throw Exception("❌ Немає засідань для обчислення середнього!");
+      }
+      return serednyaKilkistUchasnykiv();
+    });
+  }
+
+  Future<T?> naybilshaAsync() {
+    var maxZasid = znajtyMaxZaKilkistyu();
+    return Future.value(maxZasid);
+  }
+}
+
+Future<void> runAsyncDemo() async {
+  var konf = Konferentsiya<Zasidannya>("Інновації в ІТ 2025", "Київ");
+
+  konf.dodatyZasidannya(
+      1, Zasidannya(DateTime(2025, 10, 10), "Штучний інтелект", 120));
+  konf.dodatyZasidannya(
+      2, Zasidannya(DateTime(2025, 10, 11), "Кібербезпека", 95));
+  konf.dodatyZasidannya(
+      3, Zasidannya(DateTime(2025, 10, 12), "Хмарні технології", 130));
+
+  try {
+    print("\nОбчислення середнього (асинхронно)...");
+    double avg = await konf.obchyslytySerednyeAsync();
+    print("Середня кількість учасників: ${avg.toStringAsFixed(2)}");
+
+    print("\nПошук засідання з найбільшою кількістю учасників...");
+    var maxZasid = await konf.naybilshaAsync();
+    if (maxZasid != null) {
+      print("Найбільше засідання:");
+      maxZasid.showInfo();
+    }
+  } catch (e) {
+    print("Помилка під час виконання: $e");
+  } finally {
+    print("Асинхронна обробка завершена.");
+  }
+}
+
+
+void main() async {
+  await runAsyncDemo();
+}
