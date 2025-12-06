@@ -1,0 +1,128 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyLayoutApp());
+
+class MyLayoutApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.grey[200],
+        body: Center(
+          child: SingleChildScrollView(
+            child: Drawing(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Drawing extends StatelessWidget {
+  final double a = 200;
+
+  final double sheetWidth = 800;
+  final double leftMargin = 40;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: sheetWidth,
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Stack(
+        children: [
+          // 🔳 ЗАГАЛЬНА РАМКА
+          Container(
+            width: sheetWidth - 20,
+            height: 600,
+            decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.black),
+            ),
+          ),
+
+          // 🟨 ЖОВТИЙ БЛОК
+          Positioned(
+            left: leftMargin,
+            top: 20 + a,
+            child: MyBlock(
+              width: 180,
+              height: 110,
+              title:
+                  "Ще не вмерла\nУкраїна, і\nслава, і воля,\nще нам, браття",
+              color: Colors.yellow[300]!,
+              borderColor: Colors.black,
+            ),
+          ),
+
+          // 🟦 СИНІЙ БЛОК
+          Positioned(
+            left: leftMargin + 220,
+            top: 20 + a,
+            child: MyBlock(
+              width: 260,
+              height: 110,
+              title:
+                  "Згинуть наші воріженьки,\nяк роса на сонці,\nзапануєм і ми, браття, у\nсвоїй сторонці.",
+              color: Colors.lightBlue[200]!,
+              borderColor: Colors.black,
+            ),
+          ),
+
+          // ◻ БІЛИЙ БЛОК
+          Positioned(
+            left: leftMargin + 220,
+            top: 20 + a + 150,
+            child: MyBlock(
+              width: 300,
+              height: 140,
+              title: "І покажем, що ми, браття,\nкозацького роду.",
+              color: Colors.white,
+              borderColor: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MyBlock extends StatelessWidget {
+  final double width;
+  final double height;
+  final String title;
+  final Color color;
+  final Color borderColor;
+
+  const MyBlock({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.title,
+    required this.color,
+    required this.borderColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 4,             // Material Design тінь
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: width,
+        height: height,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: borderColor, width: 2),
+        ),
+        child: Text(
+          title,
+          style: const TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+  }
+}
