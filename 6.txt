@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyLayoutApp());
+
+class MyLayoutApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.grey[200],
+        body: Center(
+          child: SingleChildScrollView(
+            child: Drawing(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Drawing extends StatelessWidget {
+  final double a = 200;
+  final double b = 250;
+  final double c = 150;
+  final double d = 150;
+
+  final double sheetWidth = 800;
+  final double leftMargin = 40;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: sheetWidth,
+      height: a + b + c + d + 100,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          // Рамка
+          Positioned(
+            left: 10,
+            top: 10,
+            child: Container(
+              width: sheetWidth - 20,
+              height: a + b + c + d + 60,
+              decoration: BoxDecoration(
+                border: Border.all(width: 2, color: Colors.black),
+              ),
+            ),
+          ),
+
+          // ==========================
+          //   ЖОВТИЙ БЛОК (опущений до висоти a)
+          // ==========================
+          Positioned(
+            left: leftMargin,
+            top: 10 + a, // топ = рамка 10px + висота a
+            child: Container(
+              width: 180,
+              height: 110,
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.yellow[300],
+                border: Border.all(width: 2),
+              ),
+              child: Text(
+                "Ще не вмерла\nУкраїна, і\nслава, і воля,\nще нам, браття",
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+
+          // ==========================
+          //   СИНІЙ БЛОК (теж на висоті a)
+          // ==========================
+          Positioned(
+            left: leftMargin + 220,
+            top: 10 + a,
+            child: Container(
+              width: 260,
+              height: 110,
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.lightBlue[200],
+                border: Border.all(width: 2),
+              ),
+              child: Text(
+                "Згинуть наші воріженьки,\nяк роса на сонці,\nзапануєм і ми, браття, у\nсвоїй сторонці.",
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+
+          // ==========================
+          //   БІЛИЙ БЛОК (нижче синього)
+          // ==========================
+          Positioned(
+            left: leftMargin + 220,
+            top: 10 + a + 150, // 150 вниз після верхніх блоків
+            child: Container(
+              width: 300,
+              height: 140,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(width: 2),
+              ),
+              child: Text(
+                "І покажем, що ми, браття,\nкозацького роду.",
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
