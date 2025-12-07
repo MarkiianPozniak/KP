@@ -1,0 +1,274 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Українські поети',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const PoetsListScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+// Модель даних для поета
+class Poet {
+  final String id;
+  final String name;
+  final String years;
+  final String description;
+  final String imageAsset;
+
+  const Poet({
+    required this.id,
+    required this.name,
+    required this.years,
+    required this.description,
+    required this.imageAsset,
+  });
+}
+
+// Екран зі списком
+class PoetsListScreen extends StatefulWidget {
+  const PoetsListScreen({super.key});
+
+  @override
+  State<PoetsListScreen> createState() => _PoetsListScreenState();
+}
+
+class _PoetsListScreenState extends State<PoetsListScreen> {
+  // Список усіх поетів (ваші дані)
+  final List<Poet> _allPoets = [
+    Poet(
+      id: '1',
+      name: 'Тарас Шевченко',
+      years: '1814-1861',
+      description:
+          'Великий український поет, прозаїк, художник, етнограф. Основоположник нової української літератури. Автор збірки «Кобзар». Національний символ України.',
+      imageAsset: 'assets/images/shevchenko.jpg',
+    ),
+    Poet(
+      id: '2',
+      name: 'Леся Українка',
+      years: '1871-1913',
+      description:
+          'Видатна українська письменниця, перекладач, культурна діячка. Авторка поетичних збірок «На крилах пісень», «Думи і мрії», драматичних поем «Лісова пісня», «Камінний господар».',
+      imageAsset: 'assets/images/lesya_ukrainka.jpg',
+    ),
+    Poet(
+      id: '3',
+      name: 'Іван Франко',
+      years: '1856-1916',
+      description:
+          'Український поет, прозаїк, драматург, літературний критик, перекладач, публіцист. Класик української літератури. Автор поеми «Мойсей», роману «Перехресні стежки».',
+      imageAsset: 'assets/images/franko.jpg',
+    ),
+    Poet(
+      id: '4',
+      name: 'Ліна Костенко',
+      years: '1930',
+      description:
+          'Сучасна українська поетеса-шістдесятниця, письменниця. Лауреат Шевченківської премії. Авторка збірок «Над берегами вічної ріки», «Мадонна перехресть», історичного роману в віршах «Маруся Чурай».',
+      imageAsset: 'assets/images/kostenko.jpg',
+    ),
+    Poet(
+      id: '5',
+      name: 'Василь Симоненко',
+      years: '1935-1963',
+      description:
+          'Український поет, журналіст. Один з найяскравіших представників шістдесятників. Автор збірок «Тиша і гром», «Земне тяжіння». Відомий своєю громадянською та правозахисною лірикою.',
+      imageAsset: 'assets/images/symonenko.jpg',
+    ),
+    Poet(
+      id: '6',
+      name: 'Павло Тичина',
+      years: '1891-1967',
+      description:
+          'Український поет, перекладач, державний діяч. Класик української радянської поезії. Автор збірок «Сонячні кларнети», «Партія веде», «Чуття єдиної родини». Лауреат двох Сталінських премій.',
+      imageAsset: 'assets/images/tychyna.jpg',
+    ),
+  ];
+
+  // Список для збереження вибраних елементів (їх id)
+  final List<String> _selectedPoetIds = [];
+
+  // Метод для перемикання стану вибору
+  void _toggleSelection(String poetId) {
+    setState(() {
+      if (_selectedPoetIds.contains(poetId)) {
+        _selectedPoetIds.remove(poetId);
+      } else {
+        _selectedPoetIds.add(poetId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Українські поети'),
+        actions: [
+          // Іконка з лічильником вибраних
+          Badge(
+            label: Text(_selectedPoetIds.length.toString()),
+            child: IconButton(
+              icon: const Icon(Icons.bookmark),
+              onPressed: () {
+                // Показуємо діалог з вибраними поетами
+                if (_selectedPoetIds.isNotEmpty) {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Вибрані поети'),
+                      content: SizedBox(
+                        width: double.maxFinite,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _selectedPoetIds.length,
+                          itemBuilder: (ctx, index) {
+                            final poet = _allPoets.firstWhere(
+                                (p) => p.id == _selectedPoetIds[index]);
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: AssetImage(poet.imageAsset),
+                              ),
+                              title: Text(poet.name),
+                              subtitle: Text(poet.years),
+                            );
+                          },
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Ви ще не обрали жодного поета.'),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        itemCount: _allPoets.length,
+        itemBuilder: (ctx, index) {
+          final poet = _allPoets[index];
+          final isSelected = _selectedPoetIds.contains(poet.id);
+
+          return InkWell(
+            onTap: () => _toggleSelection(poet.id),
+            child: Card(
+              // Міняємо колір картки, якщо елемент вибрано
+              color: isSelected
+                  ? Colors.blue.withOpacity(0.1)
+                  : Theme.of(context).cardColor,
+              margin: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Зображення поета
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset(
+                        poet.imageAsset,
+                        width: 100,
+                        height: 120,
+                        fit: BoxFit.cover,
+                        errorBuilder: (ctx, error, stackTrace) => Container(
+                          width: 100,
+                          height: 120,
+                          color: Colors.grey,
+                          child: const Icon(Icons.person, size: 50),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Текстова інформація
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            poet.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            poet.years,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            poet.description,
+                            style: const TextStyle(fontSize: 14),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Іконка вибору
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Icon(
+                      isSelected
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      color: isSelected ? Colors.blue : Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      // Кнопка для скидання вибору
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _selectedPoetIds.clear();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Вибір скинуто.'),
+            ),
+          );
+        },
+        child: const Icon(Icons.clear_all),
+        tooltip: 'Скинути вибір',
+      ),
+    );
+  }
+}
