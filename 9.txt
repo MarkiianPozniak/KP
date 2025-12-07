@@ -1,0 +1,148 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyLayoutApp());
+
+class MyLayoutApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.grey[300],
+        body: Center(
+          child: SingleChildScrollView(
+            child: Drawing(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Drawing extends StatelessWidget {
+  final double a = 200; // верхній відступ блоку
+  final double sheetWidth = 800;
+  final double leftMargin = 40;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: sheetWidth,
+      height: 600,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          // Основна рамка
+          Positioned(
+            left: 10,
+            top: 10,
+            child: Container(
+              width: sheetWidth - 20,
+              height: 550,
+              decoration: BoxDecoration(
+                border: Border.all(width: 2, color: Colors.black),
+              ),
+            ),
+          ),
+
+          // ============ ЖОВТИЙ БЛОК ============
+          Positioned(
+            left: leftMargin,
+            top: a - 50,
+            child: MyBlock(
+              width: 180,
+              height: 160,
+              text: "Ще не вмерла України і слава, і воля,\n"
+                    "Ще нам, браття-українці, усміхнеться доля.\n"
+                    "Згинуть наші воріженьки, як роса на сонці.\n"
+                    "Запануєм і ми, браття, у своїй сторонці.",
+              color: Colors.yellow[300]!,
+            ),
+          ),
+
+          // ============ СИНІЙ БЛОК ============
+          Positioned(
+            left: leftMargin + 220,
+            top: a - 50,
+            child: MyBlock(
+              width: 260,
+              height: 160,
+              text: "Душу й тіло ми положим за нашу свободу,\n"
+                    "І покажем, що ми, браття, козацького роду.\n"
+                    "Ще не вмерла України і слава, і воля,\n"
+                    "Ще нам, браття-українці, усміхнеться доля.",
+              color: Colors.lightBlue[200]!,
+            ),
+          ),
+
+          // ============ БІЛИЙ БЛОК ============
+          Positioned(
+            left: leftMargin + 220,
+            top: 10 + a + 150,
+            child: MyBlock(
+              width: 300,
+              height: 140,
+              text: "І покажем, що ми, браття,\nкозацького роду.",
+              color: Colors.white,
+              borderColor: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// CLASS: Власний матеріальний блок (StatefulWidget)
+class MyBlock extends StatefulWidget {
+  final double width;
+  final double height;
+  final String text;
+  final Color color;
+  final Color borderColor;
+
+  const MyBlock({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.text,
+    this.color = Colors.white,
+    this.borderColor = Colors.transparent,
+  });
+
+  @override
+  State<MyBlock> createState() => _MyBlockState();
+}
+
+class _MyBlockState extends State<MyBlock> {
+  bool expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          expanded = !expanded;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 250),
+        width: widget.width,
+        height: widget.height,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: widget.color,
+          border: Border.all(width: 2, color: widget.borderColor),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          widget.text,
+          style: const TextStyle(fontSize: 12),
+          softWrap: true,
+          overflow: TextOverflow.fade,
+          maxLines: expanded ? 20 : 1,  
+        ),
+      ),
+    );
+  }
+}
